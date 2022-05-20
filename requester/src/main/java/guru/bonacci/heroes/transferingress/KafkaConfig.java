@@ -3,6 +3,7 @@ package guru.bonacci.heroes.transferingress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -23,8 +24,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KafkaConfig {
 
-  @Value("${spring.kafka.bootstrap-servers}") String bootstrapServer;
   private final KafkaUtils utils;
+
+  @Value("${spring.kafka.bootstrap-servers}") String bootstrapServer;
+  
   
   public ProducerFactory<String, String> validationProducerFactory() {
     return new DefaultKafkaProducerFactory<>(validationSenderProps());
@@ -49,7 +52,7 @@ public class KafkaConfig {
 
     ConcurrentMessageListenerContainer<String, String> repliesContainer = 
         containerFactory.createContainer("reply-" + utils.randomize());
-    repliesContainer.getContainerProperties().setGroupId("i-do-not-really-matter");
+    repliesContainer.getContainerProperties().setGroupId(UUID.randomUUID().toString()); // unique
     repliesContainer.setAutoStartup(false);
 
     Properties props = new Properties();
