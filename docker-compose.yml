@@ -1,6 +1,22 @@
 ---
 version: '2'
 services:
+  requester:
+   image: leonardobonacci/requester
+   build: requester
+   depends_on:
+     - broker
+   environment:
+      - SPRING_PROFILES_ACTIVE=${PROFILE:-kube}
+
+  replier:
+   image: leonardobonacci/replier
+   build: replier
+   depends_on:
+     - broker
+   environment:
+      - SPRING_PROFILES_ACTIVE=${PROFILE:-kube}
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
     hostname: zookeeper

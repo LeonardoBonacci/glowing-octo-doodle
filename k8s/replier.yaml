@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: replier-app
+spec:
+  selector:
+    matchLabels:
+      app: replier-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: replier-app
+    spec:
+      containers:
+        - name: replier-app
+          image: leonardobonacci/replier
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube

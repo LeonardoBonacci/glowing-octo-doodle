@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: requester-app
+spec:
+  selector:
+    matchLabels:
+      app: requester-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: requester-app
+    spec:
+      containers:
+        - name: requester-app
+          image: leonardobonacci/requester
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name

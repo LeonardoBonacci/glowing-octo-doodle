@@ -36,12 +36,12 @@ public class ReplyApp {
 	@EqualsAndHashCode
 	public static class DynamicTopicNameExtractor<K, V> implements TopicNameExtractor<K, V> {
 
-	  private static final String topicName = "reply-";
+	  private static final String TOPIC_NAME = "reply-";
 	  
     public String extract(final K key, final V value, final RecordContext recordContext) {
       var suffix = new String(recordContext.headers().lastHeader("topic-suffix").value());
-      log.info("Reply me through {}", topicName + suffix);
-      return topicName + suffix;
+      log.info("Reply me through {}", TOPIC_NAME + suffix);
+      return TOPIC_NAME + suffix;
     }
 	}
 }

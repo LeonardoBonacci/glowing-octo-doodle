@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootApplication
 public class RequestApp {
 
-  final static Integer NUMBER_OF_PARTITIONS = 3;
+  @Value("${num.partitions}") int numPartitions;
 
   
 	public static void main(String[] args) {
@@ -24,13 +25,13 @@ public class RequestApp {
 	}
 
 	@Bean
-  CommandLineRunner demo(ReplyingKafkaTemplate<String, String, String> kafkaTemplate) {
+  CommandLineRunner demo(ReplyingKafkaTemplate<String, String, String> kafkaTemplate, KafkaUtils utils) {
     return args -> {
       while(true) {
         var random = UUID.randomUUID().toString();
         
         var record = new ProducerRecord<>("request", random, random);
-        record.headers().add(new RecordHeader("topic-suffix", KafkaConfig.random("abc", RequestApp.NUMBER_OF_PARTITIONS).getBytes())); //TODO
+        record.headers().add(new RecordHeader("topic-suffix", utils.randomize().getBytes()));
   
         var replyFuture = kafkaTemplate.sendAndReceive(record);
   
